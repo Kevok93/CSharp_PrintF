@@ -34,7 +34,7 @@ namespace PrintF {
 			temp.var_width = temp.var_precision = false;
 			
 			#region type
-			switch (match.Groups[4].Value) {
+			switch (match.Groups[5].Value) {
 				case "d":
 				case "i":
 					temp.type = FormatSpecifierType.Signed_int;
@@ -89,6 +89,7 @@ namespace PrintF {
 					break;
 				case "%":
 					temp.type = FormatSpecifierType.Percent;
+					temp.replacement_str = "%";
 					break;
 				default:
 					throw new FormatException(match.Groups[4].Value + " is not a valid format specifier type.");
@@ -102,18 +103,20 @@ namespace PrintF {
 				temp.positive_space = flags.Contains(" ");
 				temp.force_decimal = flags.Contains("#");
 				temp.hex_prefix = flags.Contains("#");
-				temp.prefix_zero = flags.Contains(" ");
+				temp.prefix_zero = flags.Contains("0");
 			}
 			#endregion
 			#region width
 			if (match.Groups[2].Value.Length > 0)
-				temp.width = Convert.ToInt32(match.Groups[2].Value);
+				if (match.Groups[2].Value.Equals("*")) temp.width = -2;
+				else temp.width = Convert.ToInt32(match.Groups[2].Value);
 			else
 				temp.width = -1;
 			#endregion
 			#region precision
 			if (match.Groups[3].Value.Length > 0)
-				temp.precision = Convert.ToInt32(match.Groups[3].Value.TrimStart('.'));
+				if (match.Groups[3].Value.TrimStart('.').Equals("*")) temp.precision = -2;
+				else temp.precision = Convert.ToInt32(match.Groups[3].Value.TrimStart('.'));
 			else
 				temp.precision = -1;
 			#endregion
