@@ -1,9 +1,14 @@
-﻿using PrintF;
+using PrintF;
 using System;
+using System.Linq;
 public static class main {
 	public static void Main(string[] args) {
-		//if (args != null && args.Length > 1) Console.Out.printf(args[0], args[1]);
+		if (args != null) 
+			Console.Out.printf(args[0], args.Skip(1).ToArray());
+		else {
+			Console.Out.Write("USAGE: printf {format} [arg1 [arg2...]]");
+		}
 		//else Console.Out.printf("%-+010.5f %s %s!\n",3.14159265,"Hello","World");
-		new glibc_printf_test().TestMethod();
+		//new glibc_printf_test().TestMethod();
 	}
 }
