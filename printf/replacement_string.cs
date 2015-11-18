@@ -4,12 +4,15 @@ namespace PrintF {
 	public static class ReplaceString {
 		public static void replacement_string(Object o, FormatSpecifier format) {
 			string temp;
+			string temp2;
 			int precision = format.precision;
 			string prec_str = (precision==-1 ? "" : precision.ToString());
 			int width = format.width;
 			string width_str = (width==-1 ? "" : width.ToString());
 			string prefix = "";
 			char pad = (format.prefix_zero ? '0' : ' ');
+			double exp;
+			string exp_string;
 			switch (format.type) {
 				case FormatSpecifierType.Char: 
 					temp = Convert.ToChar(o).ToString();
@@ -68,15 +71,53 @@ namespace PrintF {
 					break;
 				case FormatSpecifierType.Sci:
 					temp = Convert.ToDouble(o).ToString("e" + prec_str);
+					//Just the raw exponent, so we can shrink the exponent (For compatibility with posix)
+					exp = Convert.ToDouble(temp.Substring(temp.Length-3)); 
+					exp_string = exp.ToString();
+					while (exp_string.Length < 2) exp_string = "0" + exp_string;
+					temp = temp.Substring(0, temp.Length - 3) + exp_string;
+					temp = pad_str(temp, prefix, format);
 					break;
 				case FormatSpecifierType.Sci_upper:
 					temp = Convert.ToDouble(o).ToString("E" + prec_str);
+					//Just the raw exponent, so we can shrink the exponent (For compatibility with posix)
+					exp = Convert.ToDouble(temp.Substring(temp.Length-3)); 
+					exp_string = exp.ToString();
+					while (exp_string.Length < 2) exp_string = "0" + exp_string;
+					temp = temp.Substring(0, temp.Length - 3) + exp_string;
+					temp = pad_str(temp, prefix, format);
 					break;
 				case FormatSpecifierType.Min_sci_float:
-					temp = Math.Abs(Convert.ToDouble(o)).ToString("g" + prec_str);
+					temp = Convert.ToDouble(o).ToString("e" + prec_str);
+					//Just the raw exponent, so we can shrink the exponent (For compatibility with posix)
+					exp = Convert.ToDouble(temp.Substring(temp.Length-3));
+					if (exp < 4 || exp >= precision) { //Finish the exp notation
+						exp_string = exp.ToString();
+						while (exp_string.Length < 2) exp_string = 0 + exp_string;
+						temp = temp.Substring(0, temp.Length - 3) + exp_string;
+					} else { //Float will be better
+						prefix = sign(format, Convert.ToDouble(o));
+						temp = Math.Abs(Convert.ToDouble(o)).ToString("f" + prec_str);
+						while (temp.Length + prefix.Length < width) temp = pad + temp;
+						temp = prefix + temp;
+					}
+					temp = pad_str(temp, prefix, format);
 					break;
 				case FormatSpecifierType.Min_sci_float_upper:
-					temp = Math.Abs(Convert.ToDouble(o)).ToString("G" + prec_str);
+					temp = Convert.ToDouble(o).ToString("E" + prec_str);
+					//Just the raw exponent, so we can shrink the exponent (For compatibility with posix)
+					exp = Convert.ToDouble(temp.Substring(temp.Length-3));
+					if (exp < 4 || exp >= precision) { //Finish the exp notation
+						exp_string = exp.ToString();
+						while (exp_string.Length < 2) exp_string = 0 + exp_string;
+						temp = temp.Substring(0, temp.Length - 3) + exp_string;
+					} else { //Float will be better
+						prefix = sign(format, Convert.ToDouble(o));
+						temp = Math.Abs(Convert.ToDouble(o)).ToString("F" + prec_str);
+						while (temp.Length + prefix.Length < width) temp = pad + temp;
+						temp = prefix + temp;
+					}
+					temp = pad_str(temp, prefix, format);
 					break;
 				default:
 					temp = "";

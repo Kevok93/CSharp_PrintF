@@ -79,14 +79,15 @@ public class glibc_printf_test
 		}
 		[TearDown]
 		public void printReport() {
-			Console.WriteLine(glibc_printf_test.report);
+			Console.Out.printf("|%35.35s| != |%35.35s|\n", "Actual", "Expected");
+			Console.Out.WriteLine(glibc_printf_test.report);
 		}
 	}
 	
 	[Test]
 	public void entropy_test () {
 		for(int i = 0; i < 50; i++) 
-			AssertOrPrint("-1.70141173319264430e+038", SPrintF.sprintf("%.17e", float.MinValue / 2));
+			AssertOrPrint(SPrintF.sprintf("%.17e", float.MinValue / 2), "-1.70141173319264430e+38");
 	}
 	[Test]
 	public void digital_test ([Range(0,15)] int testcase) {
@@ -100,7 +101,7 @@ public class glibc_printf_test
 		if ((testcase & 1) == 0) prefix += "0";
 		string format = SPrintF.sprintf("|%s6d |%s6o |%s6x |%s6X |%s6u |", prefix, prefix, prefix, prefix, prefix);
 		string output = SPrintF.sprintf(format, DEC, INT, INT, INT, UNS);
-  		AssertOrPrint(digital_test_expected[testcase], output);
+  		AssertOrPrint(output, digital_test_expected[testcase]);
 	}
 	
 	[Test]
@@ -108,14 +109,14 @@ public class glibc_printf_test
 		string FORMAT = "|%12.4f|%12.4e|%12.4g|\n";
 		double value = float_test_expected[testcase].Item2;
 		string output = SPrintF.sprintf(FORMAT, value, value, value);
-  		AssertOrPrint(float_test_expected[testcase].Item1, output);
+  		AssertOrPrint(output, float_test_expected[testcase].Item1);
 	}
 	
-	public void AssertOrPrint ( string s1, string s2) {
+	public void AssertOrPrint ( string actual, string expected) {
   		try {
-  			Assert.AreEqual(s2, s1);
+  			Assert.AreEqual(expected, actual);
   		} catch (AssertionException e) {
-			report.printf("|%35.35s| != |%35.35s|\n", s1, s2);
+			report.printf("|%35.35s| != |%35.35s|\n", actual, expected);
 			throw;
   		}
 	}
