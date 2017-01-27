@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Text.RegularExpressions;
 namespace PrintF {
-	public class FormatSpecifier {
+	public class FormatSpecification {
 		public int 
 			start, 
 			length,
@@ -25,8 +25,8 @@ namespace PrintF {
 			var_width,
 			var_precision;
 		
-		public static FormatSpecifier parseFormatSpecifier(Match match, String format) {
-			FormatSpecifier temp = new FormatSpecifier();
+		public static FormatSpecification parseFormatSpecifier(Match match, String format) {
+			FormatSpecification temp = new FormatSpecification();
 			temp.length = match.Length;
 			temp.start = match.Index;
 			temp.specifier_str = format.Substring(temp.start, temp.length);

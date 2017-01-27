@@ -66,6 +66,7 @@ public class glibc_printf_test
 	[	TestCase("1e+06",					"%g",		1000000.0,				TestName="G consistency 5"					)]
 	[	TestCase("10",						"%g",		10.0,					TestName="G consistency 6"					)]
 	[	TestCase("0.02",					"%g",		0.02,					TestName="G consistency 7"					)]
+	[	TestCase(shortstr,					shortstr,	                        TestName="Zero-arg Print"					)]
 	public void sprintfTest(String expected, String format, params Object[] args) {
 		string actual = SPrintF.sprintf(format, args);
   		AssertOrPrint(actual, expected);
@@ -106,7 +107,7 @@ public class glibc_printf_test
 	
 	[Test]
 	public void float_test ([Range(0,8)] int testcase) {
-		string FORMAT = "|%12.4f|%12.4e|%12.4g|\n";
+		string FORMAT = "|%12.4f|%12.4e|%12.4g|";
 		double value = float_test_expected[testcase].Item2;
 		string output = SPrintF.sprintf(FORMAT, value, value, value);
   		AssertOrPrint(output, float_test_expected[testcase].Item1);

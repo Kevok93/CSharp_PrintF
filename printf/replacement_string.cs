@@ -2,7 +2,7 @@
 using System.Text.RegularExpressions;
 namespace PrintF {
 	public static class ReplaceString {
-		public static void replacement_string(Object o, FormatSpecifier format) {
+		public static void replacement_string(Object o, FormatSpecification format) {
 			string temp;
 			string temp2;
 			int precision = format.precision;
@@ -133,7 +133,7 @@ namespace PrintF {
 			}
 			format.replacement_str = temp;
 		}
-		static string pad_str (string base_str, string prefix, FormatSpecifier format) {
+		static string pad_str (string base_str, string prefix, FormatSpecification format) {
 			int width = format.width;
 			int precision = format.precision;
 			char pad = (format.prefix_zero ? '0' : ' ');
@@ -155,7 +155,7 @@ namespace PrintF {
 			}
 			return base_str;
 		}
-		static string sign (FormatSpecifier format, double value) {
+		static string sign (FormatSpecification format, double value) {
 			if (value < 0) return "-";
 			if (value > 0) {
 				if (format.force_sign) return "+";
