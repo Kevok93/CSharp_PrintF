@@ -22,8 +22,10 @@ namespace PrintF {
 
 		public static string sprintf(String format, params Object[] args) {
 		    string output = format;
+
+		    //We need to replace tokens back-to-front, or else we change the tokens' absolute positions
 		    Stack<FormatSpecification> replacements = new Stack<FormatSpecification>();
-		//replacements.Push(null);
+
 			Match m = Regex.Match(format, R_FORMAT_SPECIFIER);
 			FormatSpecification formatSpecification;
 
